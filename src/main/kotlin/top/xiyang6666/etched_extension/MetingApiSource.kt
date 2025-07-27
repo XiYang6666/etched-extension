@@ -2,6 +2,7 @@ package top.xiyang6666.etched_extension
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import gg.moonflower.etched.api.record.TrackData
 import gg.moonflower.etched.api.sound.download.SoundDownloadSource
@@ -36,6 +37,14 @@ class MetingApiSource : SoundDownloadSource {
     }
 
     private inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
+
+    private fun parseApiResult(content: String): List<ApiTrackRecord> {
+        try {
+            return Gson().fromJsonTyped(content)
+        } catch (_: JsonSyntaxException) {
+            throw RuntimeException("Unknown song")
+        }
+    }
 
     private fun request(url: URL, listener: DownloadProgressListener?, proxy: Proxy): InputStream {
         listener?.progressStartRequest(REQUESTING_COMPONENT)
