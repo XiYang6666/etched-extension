@@ -9,7 +9,6 @@ import gg.moonflower.etched.api.util.DownloadProgressListener
 import net.minecraft.network.chat.Component
 import net.minecraft.server.packs.resources.ResourceManager
 import top.xiyang6666.etched_extension.Config
-import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
 import java.net.Proxy
@@ -122,18 +121,25 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     override fun resolveAlbumCover(
-        s: String?, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
+        s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
-        TODO("Not yet implemented")
+        val uri = URI(s)
+        if (uri.path !== "/album") {
+            return Optional.empty()
+        }
+        val baseApi = Config.ebnrApi
+        Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
+            val content = stream.reader().readText()
+            val album = parseAlbum(content)
+            return Optional.of(album.coverUrl)
+        }
     }
 
     override fun isValidUrl(s: String): Boolean {
         try {
             val uri = URI(s)
-            EtchedExtension.LOGGER.info("[2137] ${uri.host} ${uri.path}")
             return uri.host == "music.163.com" && setOf("/song", "/playlist", "/album").contains(uri.path)
         } catch (e: URISyntaxException) {
-            EtchedExtension.LOGGER.info("[2137] $e")
             return false
         }
     }
