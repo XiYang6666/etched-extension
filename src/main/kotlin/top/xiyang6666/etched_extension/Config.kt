@@ -9,11 +9,12 @@ import net.minecraftforge.fml.event.config.ModConfigEvent
 object Config {
     private val BUILDER = ForgeConfigSpec.Builder()
 
-    //    private val DEFAULT_METING_API =
-//        BUILDER.comment("默认 meting 服务器").define("default_meting_api", "https://api.injahow.cn/meting/")
+    private val EBNR_API = BUILDER
+        .comment("ebnr api 地址")
+        .define("ebnr_api", "https://ebnr.xiyang6666.top")
     val SPEC: ForgeConfigSpec = BUILDER.build()
 
-//    var defaultMetingApi: String = DEFAULT_METING_API.get()
+    var ebnrApi = EBNR_API.get()
 
     @SubscribeEvent
     fun onLoad(event: ModConfigEvent?) {
@@ -21,6 +22,6 @@ object Config {
     }
 
     fun bake() {
-//        defaultMetingApi = DEFAULT_METING_API.get()
+        ebnrApi = EBNR_API.get()
     }
 }

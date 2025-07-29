@@ -8,6 +8,8 @@ import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import org.slf4j.Logger
+import top.xiyang6666.etched_extension.source.EBNRApiSource
+import top.xiyang6666.etched_extension.source.MetingApiSource
 
 @Mod(EtchedExtension.MODID)
 class EtchedExtension {
@@ -28,8 +30,6 @@ class EtchedExtension {
 
     private fun commonSetup(event: FMLCommonSetupEvent) {
         SoundSourceManager.registerSource(MetingApiSource())
-//        SoundSourceManager.registerSource(MetingProtocolSource())
+        SoundSourceManager.registerSource(EBNRApiSource())
     }
-
-
 }
