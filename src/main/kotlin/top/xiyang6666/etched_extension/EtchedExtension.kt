@@ -21,15 +21,18 @@ class EtchedExtension {
     init {
         val modEventBus = FMLJavaModLoadingContext.get().modEventBus
 
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC)
+
         modEventBus.addListener { event: FMLCommonSetupEvent ->
             this.commonSetup(event)
         }
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC)
     }
 
     private fun commonSetup(event: FMLCommonSetupEvent) {
+
         SoundSourceManager.registerSource(MetingApiSource())
         SoundSourceManager.registerSource(EBNRApiSource())
+
+        LOGGER.info("Using ebnr api: ${Config.ebnrApi.get()}")
     }
 }

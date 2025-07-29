@@ -68,7 +68,7 @@ class EBNRApiSource : SoundDownloadSource {
 
     override fun resolveUrl(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<URL> {
         val uri = URI(s)
-        val baseApi = Config.ebnrApi
+        val baseApi = Config.ebnrApi.get()
         when (uri.path) {
             "/song" -> return listOf(URL("$baseApi/resolve/$s"))
 
@@ -84,7 +84,7 @@ class EBNRApiSource : SoundDownloadSource {
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
         val uri = URI(s)
-        val baseApi = Config.ebnrApi
+        val baseApi = Config.ebnrApi.get()
         when (uri.path) {
             "/song" -> Utils.get(URL("$baseApi/info/$uri"), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
@@ -127,7 +127,7 @@ class EBNRApiSource : SoundDownloadSource {
         if (uri.path !== "/album") {
             return Optional.empty()
         }
-        val baseApi = Config.ebnrApi
+        val baseApi = Config.ebnrApi.get()
         Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
             val content = stream.reader().readText()
             val album = parseAlbum(content)
