@@ -1,5 +1,7 @@
 # Etched-Extension
 
+简体中文 | [English](/docs/README-en.md)
+
 为 [Etched](https://github.com/jacksonhardaway/etched) 添加了 [Meting-api](https://github.com/injahow/meting-api)
 与网易云音乐分享链接支持.
 
