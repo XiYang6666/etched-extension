@@ -1,7 +1,6 @@
 package top.xiyang6666.etched_extension.source
 
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.annotations.SerializedName
 import gg.moonflower.etched.api.record.TrackData
 import gg.moonflower.etched.api.sound.download.SoundDownloadSource
@@ -9,6 +8,7 @@ import gg.moonflower.etched.api.util.DownloadProgressListener
 import net.minecraft.network.chat.Component
 import net.minecraft.server.packs.resources.ResourceManager
 import top.xiyang6666.etched_extension.Config
+import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
 import java.net.Proxy
@@ -23,26 +23,26 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     data class Artist(
-        val id: Int,
+        val id: Long,
         val name: String
     )
 
     data class SongInfo(
-        val id: Int,
+        val id: Long,
         val name: String,
         val artists: List<Artist>,
         val album: AlbumInfo,
     )
 
     data class AlbumInfo(
-        val id: Int,
+        val id: Long,
         val name: String,
         @SerializedName("cover_url")
         val coverUrl: String,
     )
 
     data class Album(
-        val id: Int,
+        val id: Long,
         val name: String,
         val artists: List<Artist>,
         @SerializedName("cover_url")
@@ -50,21 +50,9 @@ class EBNRApiSource : SoundDownloadSource {
         val songs: List<SongInfo>,
     )
 
-    private fun parseSong(content: String): SongInfo {
-        try {
-            return Gson().fromJsonTyped(content)
-        } catch (_: JsonSyntaxException) {
-            throw RuntimeException("Unknown song")
-        }
-    }
+    private fun parseSong(content: String): SongInfo = Gson().fromJsonTyped(content)
 
-    private fun parseAlbum(content: String): Album {
-        try {
-            return Gson().fromJsonTyped(content)
-        } catch (_: JsonSyntaxException) {
-            throw RuntimeException("Unknown song")
-        }
-    }
+    private fun parseAlbum(content: String): Album = Gson().fromJsonTyped(content)
 
     override fun resolveUrl(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<URL> {
         val uri = URI(s)
@@ -83,6 +71,7 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
+        EtchedExtension.LOGGER.info("[2137] resolveTracks($s)")
         val uri = URI(s)
         val baseApi = Config.ebnrApi.get()
         when (uri.path) {
@@ -136,10 +125,21 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     override fun isValidUrl(s: String): Boolean {
+        EtchedExtension.LOGGER.info("isValidUrl($s)")
         try {
             val uri = URI(s)
+            EtchedExtension.LOGGER.info(
+                "isValidUrl($s) -> ${
+                    uri.host == "music.163.com" && setOf(
+                        "/song",
+                        "/playlist",
+                        "/album"
+                    ).contains(uri.path)
+                }"
+            )
             return uri.host == "music.163.com" && setOf("/song", "/playlist", "/album").contains(uri.path)
         } catch (e: URISyntaxException) {
+            EtchedExtension.LOGGER.info("isValidUrl($s) -> false")
             return false
         }
     }
