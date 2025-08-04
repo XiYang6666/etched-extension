@@ -71,7 +71,6 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
-        EtchedExtension.LOGGER.info("[2137] resolveTracks($s)")
         val uri = URI(s)
         val baseApi = Config.ebnrApi.get()
         when (uri.path) {
@@ -125,21 +124,10 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     override fun isValidUrl(s: String): Boolean {
-        EtchedExtension.LOGGER.info("isValidUrl($s)")
         try {
             val uri = URI(s)
-            EtchedExtension.LOGGER.info(
-                "isValidUrl($s) -> ${
-                    uri.host == "music.163.com" && setOf(
-                        "/song",
-                        "/playlist",
-                        "/album"
-                    ).contains(uri.path)
-                }"
-            )
             return uri.host == "music.163.com" && setOf("/song", "/playlist", "/album").contains(uri.path)
         } catch (e: URISyntaxException) {
-            EtchedExtension.LOGGER.info("isValidUrl($s) -> false")
             return false
         }
     }
