@@ -56,7 +56,8 @@ class EBNRApiSource : SoundDownloadSource {
 
     override fun resolveUrl(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<URL> {
         val uri = URI(s)
-        val baseApi = Config.ebnrApi.get()
+        // 这个函数是客户端执行的
+        val baseApi = EtchedExtension.clientEbnrApi
         when (uri.path) {
             "/song" -> return listOf(URL("$baseApi/resolve/$s"))
 
@@ -115,7 +116,8 @@ class EBNRApiSource : SoundDownloadSource {
         if (uri.path !== "/album") {
             return Optional.empty()
         }
-        val baseApi = Config.ebnrApi.get()
+        // 我不知道它是在哪执行的, 在我的游戏中从来没成功获取到封面
+        val baseApi = EtchedExtension.clientEbnrApi
         Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
             val content = stream.reader().readText()
             val album = parseAlbum(content)
