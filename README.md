@@ -1,11 +1,11 @@
 # Etched-Extension
 
-[![License](https://img.shields.io/github/license/XiYang6666/Etched-Extension)](LICENSE)
+[![License](https://img.shields.io/github/license/XiYang6666/etched-extension)](LICENSE)
 ![Langrage](https://img.shields.io/badge/langrage-Kotlin-7f52ff?logo=kotlin)
 ![Support](https://img.shields.io/badge/supprot-forge_1.20.1_|_neoforge_1.21.1-d7742f)
-[![Release](https://img.shields.io/github/v/release/XiYang6666/Etched-Extension)](https://github.com/XiYang6666/Etched-Extension/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/XiYang6666/Etched-Extension/build.yml?branch=main)](https://github.com/XiYang6666/Etched-Extension/actions)
-[![Stars](https://img.shields.io/github/stars/XiYang6666/Etched-Extension?style=social)](https://github.com/XiYang6666/Etched-Extension/stargazers)
+[![Release](https://img.shields.io/github/v/release/XiYang6666/etched-extension)](https://github.com/XiYang6666/etched-extension/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/XiYang6666/etched-extension/build.yml?branch=1.20.1)](https://github.com/XiYang6666/etched-extension/actions)
+[![Stars](https://img.shields.io/github/stars/XiYang6666/etched-extension?style=social)](https://github.com/XiYang6666/etched-extension/stargazers)
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/etched-extension?logo=modrith)
 
 简体中文 | [English](/docs/README-en.md)
