@@ -1,23 +1,64 @@
 package top.xiyang6666.etched_extension.packet
 
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraftforge.network.NetworkEvent
+import com.google.gson.Gson
+import io.netty.buffer.ByteBuf
+import net.minecraft.ChatFormatting
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.ResourceLocation
+import net.neoforged.neoforge.network.handling.IPayloadContext
 import top.xiyang6666.etched_extension.EtchedExtension
-import java.util.function.Supplier
+import top.xiyang6666.etched_extension.Utils
+import top.xiyang6666.etched_extension.Utils.fromJsonTyped
+import java.net.URI
+import java.util.concurrent.CompletableFuture
 
 
-data class EBNRApiPacket(val api: String) {
-    constructor(buf: FriendlyByteBuf) : this(buf.readUtf())
-
-    fun encode(buf: FriendlyByteBuf) {
-        buf.writeUtf(this.api)
+data class EBNRApiPacket(val api: String) : CustomPacketPayload {
+    companion object {
+        val TYPE = CustomPacketPayload.Type<EBNRApiPacket>(
+            ResourceLocation.fromNamespaceAndPath(
+                EtchedExtension.MODID, "ebnr_api"
+            )
+        )
+        val STREAM_CODEC: StreamCodec<ByteBuf, EBNRApiPacket> = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, EBNRApiPacket::api, ::EBNRApiPacket
+        )
     }
 
-    fun handle(ctx: Supplier<NetworkEvent.Context>) {
-        ctx.get().enqueueWork {
+    data class EbnrApiResult(
+        val message: String,
+        val is_vip: Boolean,
+    )
+
+    fun handle(ctx: IPayloadContext) {
+        ctx.enqueueWork {
             EtchedExtension.clientEbnrApi = this.api
             EtchedExtension.LOGGER.debug("Synchronized server ebnr api: ${this.api}")
+            val instance = Minecraft.getInstance()
+            CompletableFuture.supplyAsync {
+                try {
+                    Utils.get(URI(this.api).toURL(), null, "").use { stream ->
+                        val content = stream.reader().readText()
+                        val result = Gson().fromJsonTyped<EbnrApiResult>(content)
+                        return@supplyAsync result.is_vip
+                    }
+                } catch (_: Exception) {
+                    return@supplyAsync false
+                }
+            }.thenApply {
+                if (!it) instance.submit {
+                    instance.player?.sendSystemMessage(
+                        Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)
+                    )
+                }
+            }
+
         }
-        ctx.get().packetHandled = true
     }
+
+    override fun type() = TYPE
 }

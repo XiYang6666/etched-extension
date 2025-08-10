@@ -1,13 +1,21 @@
 package top.xiyang6666.etched_extension
 
-import net.minecraftforge.common.ForgeConfigSpec
+import net.neoforged.neoforge.common.ModConfigSpec
+
 
 object Config {
-    private val BUILDER = ForgeConfigSpec.Builder()
+    val CONFIG: EtchedExtensionConfig
+    val SPEC: ModConfigSpec
 
-    val ebnrApi: ForgeConfigSpec.ConfigValue<String> = BUILDER
-        .comment("EvenBetterNeteaseResolver api")
-        .define("ebnr_api", "https://ebnr.xiyang6666.top")
+    init {
+        val pair = ModConfigSpec.Builder().configure(::EtchedExtensionConfig)
+        CONFIG = pair.left
+        SPEC = pair.right
+    }
 
-    val SPEC: ForgeConfigSpec = BUILDER.build()
+    class EtchedExtensionConfig(builder: ModConfigSpec.Builder) {
+        val ebnrApi = builder
+            .comment("EvenBetterNeteaseResolver api")
+            .define("ebnr_api", "https://ebnr.xiyang6666.top")
+    }
 }

@@ -11,7 +11,7 @@ import java.net.URL
 
 object Utils {
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
-
+    
     fun get(url: URL, listener: DownloadProgressListener?, apiName: String): InputStream {
         val questionComponent = Component.translatable("sound_source.etched.requesting", Component.literal(apiName))
         listener?.progressStartRequest(questionComponent)

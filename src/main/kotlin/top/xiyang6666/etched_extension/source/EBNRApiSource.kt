@@ -59,12 +59,12 @@ class EBNRApiSource : SoundDownloadSource {
         // 这个函数是客户端执行的
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
         when (uri.path) {
-            "/song" -> return listOf(URL("$baseApi/resolve/$s"))
+            "/song" -> return listOf(URI("$baseApi/resolve/$s").toURL())
 
-            "/album" -> Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
+            "/album" -> Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val album = parseAlbum(content)
-                return album.songs.map { URL("$baseApi/audio/?id=${it.id}") }
+                return album.songs.map { URI("$baseApi/audio/?id=${it.id}").toURL() }
             }
 
             else -> throw RuntimeException("Unknown or unsupported type: ${uri.path}")
@@ -73,9 +73,9 @@ class EBNRApiSource : SoundDownloadSource {
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
         val uri = URI(s)
-        val baseApi = Config.ebnrApi.get().removeSuffix("/")
+        val baseApi = Config.CONFIG.ebnrApi.get().removeSuffix("/")
         when (uri.path) {
-            "/song" -> Utils.get(URL("$baseApi/info/$uri"), listener, API_NAME).use { stream ->
+            "/song" -> Utils.get(URI("$baseApi/info/$uri").toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val song = parseSong(content)
                 return listOf(
@@ -87,7 +87,7 @@ class EBNRApiSource : SoundDownloadSource {
                 )
             }
 
-            "/album" -> Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
+            "/album" -> Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val album = parseAlbum(content)
                 return listOf(
@@ -118,7 +118,7 @@ class EBNRApiSource : SoundDownloadSource {
         }
         // 我不知道它是在哪执行的, 在我的游戏中从来没成功获取到封面
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
-        Utils.get(URL("$baseApi/album/$uri"), listener, API_NAME).use { stream ->
+        Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
             val content = stream.reader().readText()
             val album = parseAlbum(content)
             return Optional.of(album.coverUrl)
