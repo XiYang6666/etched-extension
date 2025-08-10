@@ -37,4 +37,4 @@ You can change the **ebnr api** address in the configuration file `etched_extens
 
 ## 📜 License
 
-This project is open-sourced under the [MIT License](LICENSE).
+This project is open-sourced under the [GPLv3 License](LICENSE).

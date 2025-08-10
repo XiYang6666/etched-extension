@@ -23,7 +23,7 @@
 
 > [!WARNING]
 > 默认地址不支持 VIP 歌曲。  
-> 使用非 VIP API 时，虽然能成功刻录，但播放时会出现错误。
+> 使用非 VIP API 时，虽然能成功蚀刻，但播放时会出现错误。
 
 ## 配置
 
@@ -37,4 +37,4 @@
 
 ## 📜 License
 
-本项目基于 [MIT License](LICENSE) 开源。
+本项目基于 [GPLv3 License](LICENSE) 开源。
