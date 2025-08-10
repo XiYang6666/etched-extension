@@ -1,11 +1,35 @@
 # Etched-Extension
 
-[简体中文](/README.md) | English
+[![License](https://img.shields.io/github/license/XiYang6666/etched-extension)](LICENSE)
+![Language](https://img.shields.io/badge/language-Kotlin-7f52ff?logo=kotlin)
+![Support](https://img.shields.io/badge/support-forge_1.20.1_|_neoforge_1.21.1-d7742f)
+[![Release](https://img.shields.io/github/v/release/XiYang6666/etched-extension)](https://github.com/XiYang6666/etched-extension/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/XiYang6666/etched-extension/build.yml?branch=1.21.1)](https://github.com/XiYang6666/etched-extension/actions)
+[![Stars](https://img.shields.io/github/stars/XiYang6666/etched-extension?style=social)](https://github.com/XiYang6666/etched-extension/stargazers)
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/etched-extension?logo=modrith)
 
-Adds support for [Meting-api](https://github.com/injahow/meting-api) and NetEase Cloud Music share links to [Etched](https://github.com/jacksonhardaway/etched).
+简体中文 | [English](/docs/README-en.md)
 
-NetEase Cloud Music tracks are resolved using the [ebnr API](https://github.com/XiYang6666/EvenBetterNeteaseResolver).
+---
 
-You can change the ebnr API endpoint in the configuration. The default endpoint does not support VIP tracks; when using a non-VIP API, the track can be etched successfully, but playback will result in an error.
+Adds [Meting-api](https://github.com/injahow/meting-api) and NetEase Cloud Music share link support to [Etched](https://github.com/jacksonhardaway/etched).
 
-![example](/docs/example.png)
+NetEase Cloud Music is resolved using [ebnr api](https://github.com/XiYang6666/EvenBetterNeteaseResolver).
+
+> [!WARNING]
+> The default API address does not support VIP songs.
+> When using a non-VIP API, the burn will succeed, but playback will result in an error.
+
+## Configuration
+
+You can change the **ebnr api** address in the configuration file `etched_extension-common.toml`.
+
+## Example
+
+![example](example.png)
+
+---
+
+## 📜 License
+
+This project is open-sourced under the [MIT License](LICENSE).
