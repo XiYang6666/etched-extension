@@ -23,7 +23,7 @@ NetEase Cloud Music is resolved using [ebnr api](https://github.com/XiYang6666/E
 
 > [!WARNING]
 > The default API address does not support VIP songs.
-> When using a non-VIP API, the burn will succeed, but playback will result in an error.
+> When using a non-VIP API, although VIP songs can be successfully etched, errors may occur during playback.
 
 ## Configuration
 
@@ -37,5 +37,5 @@ You can change the **ebnr api** address in the configuration file `etched_extens
 
 ## 📜 License
 
-This project is open-sourced under the [MIT License](LICENSE).
+This project is open-sourced under the [GPLv3 License](LICENSE).
 

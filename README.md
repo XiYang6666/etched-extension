@@ -5,7 +5,7 @@
 ---
 
 [![License](https://img.shields.io/github/license/XiYang6666/etched-extension)](LICENSE)
-![Langrage](https://img.shields.io/badge/langrage-Kotlin-7f52ff?logo=kotlin)
+![Language](https://img.shields.io/badge/langrage-Kotlin-7f52ff?logo=kotlin)
 ![Support](https://img.shields.io/badge/supprot-forge_1.20.1_|_neoforge_1.21.1-d7742f)
 [![Release](https://img.shields.io/github/v/release/XiYang6666/etched-extension)](https://github.com/XiYang6666/etched-extension/releases)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/XiYang6666/etched-extension/build.yml?branch=1.20.1)](https://github.com/XiYang6666/etched-extension/actions)
@@ -37,4 +37,4 @@
 
 ## 📜 License
 
-本项目基于 [MIT License](LICENSE) 开源。
+本项目基于 [GPLv3 License](LICENSE) 开源。
