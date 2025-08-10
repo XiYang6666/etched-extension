@@ -12,7 +12,8 @@
 
 ---
 
-Adds [Meting-api](https://github.com/injahow/meting-api) and NetEase Cloud Music share link support to [Etched](https://github.com/jacksonhardaway/etched).
+Adds [Meting-api](https://github.com/injahow/meting-api) and NetEase Cloud Music share link support
+to [Etched](https://github.com/jacksonhardaway/etched).
 
 NetEase Cloud Music is resolved using [ebnr api](https://github.com/XiYang6666/EvenBetterNeteaseResolver).
 
