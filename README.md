@@ -2,6 +2,8 @@
     <img src="docs/logo.png" alt="logo">
 </div>
 
+---
+
 [![License](https://img.shields.io/github/license/XiYang6666/etched-extension)](LICENSE)
 ![Langrage](https://img.shields.io/badge/langrage-Kotlin-7f52ff?logo=kotlin)
 ![Support](https://img.shields.io/badge/supprot-forge_1.20.1_|_neoforge_1.21.1-d7742f)
