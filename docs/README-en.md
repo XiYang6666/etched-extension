@@ -12,7 +12,7 @@
 [![Stars](https://img.shields.io/github/stars/XiYang6666/etched-extension?style=social)](https://github.com/XiYang6666/etched-extension/stargazers)
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/etched-extension?logo=modrith)
 
-简体中文 | [English](/docs/README-en.md)
+[简体中文](/README.md) | English
 
 ---
 
