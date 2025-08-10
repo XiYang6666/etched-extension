@@ -26,7 +26,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4.4.2
 
       - name: Build with Gradle Wrapper
-        run:  gradle build
+        run:  ./gradlew build
 
   dependency-submission:
     runs-on: ubuntu-latest
@@ -42,4 +42,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@1.0.0
+        uses: gradle/actions/dependency-submission@v4.4.2
