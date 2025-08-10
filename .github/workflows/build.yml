@@ -1,0 +1,45 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "1.20.1", "1.21.1" ]
+  pull_request:
+    branches: [ "1.20.1", "1.21.1" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 根据分支选择 JDK 版本
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ github.ref_name == '1.21.1' && '21' || '17' }}
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4.4.2
+
+      - name: Build with Gradle Wrapper
+        run:  gradle build
+
+  dependency-submission:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ github.ref_name == '1.21.1' && '21' || '17' }}
+          distribution: 'temurin'
+
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@1.0.0
