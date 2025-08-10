@@ -1,6 +1,7 @@
 package top.xiyang6666.etched_extension.packet
 
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
@@ -22,8 +23,8 @@ data class EBNRApiPacket(val api: String) {
     }
 
     data class EbnrApiResult(
-        val message: String,
-        val is_vip: Boolean,
+        @SerializedName("is_vip")
+        val isVip: Boolean,
     )
 
     fun handle(ctx: Supplier<NetworkEvent.Context>) {
@@ -37,7 +38,7 @@ data class EBNRApiPacket(val api: String) {
                     Utils.get(URI(this.api).toURL(), null, "").use { stream ->
                         val content = stream.reader().readText()
                         val result = Gson().fromJsonTyped<EbnrApiResult>(content)
-                        return@supplyAsync result.is_vip
+                        return@supplyAsync result.isVip
                     }
                 } catch (_: Exception) {
                     return@supplyAsync false
