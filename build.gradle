@@ -24,6 +24,10 @@ base {
     archivesName = mod_id
 }
 
+jar {
+    archiveFileName = "${mod_id}-neoforge-${version}+mc1.21.1.jar"
+}
+
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 kotlin.jvmToolchain(21)
 
