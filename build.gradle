@@ -13,6 +13,10 @@ base {
     archivesName = mod_id
 }
 
+jar {
+    archiveFileName = "${mod_id}-forge-${version}+mc1.20.1.jar"
+}
+
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
