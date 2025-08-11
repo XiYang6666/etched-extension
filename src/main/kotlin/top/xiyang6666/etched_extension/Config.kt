@@ -19,7 +19,7 @@ object Config {
 
         class AlbumCover(builder: ModConfigSpec.Builder) {
             val colorDivisions: ModConfigSpec.IntValue
-            val coverResolution: ModConfigSpec.ConfigValue<Int>
+            val coverResolution: ModConfigSpec.ConfigValue<String>
 
             init {
                 builder
@@ -37,16 +37,13 @@ object Config {
 
                 coverResolution = builder
                     .comment(
-                        "Controls the output resolution of the album cover texture in pixels (e.g., 16, 32, 64).",
-                        "Requires corresponding overlay textures to be present in this mod's assets.",
-                        "Supported values: 16, 32"
+                        "Determines which album cover resource to use.",
+                        "The cover data is defined in assets/etched_extension/textures/item/album_cover_properties_{coverResolution}.json.",
+                        "Examples: 16, 32, 64 — each corresponds to a different cover resolution."
                     )
-                    .defineInList("coverResolution", 32, listOf(16, 32))
+                    .define("coverResolution", "32")
                 builder.pop()
-
             }
         }
     }
-
-
 }
