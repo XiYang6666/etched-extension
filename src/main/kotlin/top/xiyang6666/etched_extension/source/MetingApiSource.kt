@@ -15,7 +15,7 @@ import java.util.*
 class MetingApiSource : SoundDownloadSource {
 
     companion object {
-        private val API_NAME = "Meting-Api"
+        private const val API_NAME = "Meting-Api"
         lateinit var instance: MetingApiSource
     }
 
@@ -51,7 +51,7 @@ class MetingApiSource : SoundDownloadSource {
             "playlist", "song" -> Utils.get(uri.toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val data: List<ApiTrackRecord> = parseApiResult(content)
-                return data.map { URL(it.url) }
+                return data.map { URI(it.url).toURL() }
             }
 
             "url" -> {
@@ -72,6 +72,7 @@ class MetingApiSource : SoundDownloadSource {
     override fun resolveTracks(
         s: String, listener: DownloadProgressListener?, proxy: Proxy
     ): List<TrackData> {
+        println("-> resolveTracks($s)")
         val uri = URI(s)
         val queryMap = uri.query?.split("&")?.associate {
             val (key, value) = it.split("=", limit = 2)
@@ -111,7 +112,7 @@ class MetingApiSource : SoundDownloadSource {
     override fun resolveAlbumCover(
         s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
-        return Utils.get(URL(s), listener, API_NAME).use { inputStream ->
+        return Utils.get(URI(s).toURL(), listener, API_NAME).use { inputStream ->
             val content = inputStream.reader().readText()
             listener?.progressStartLoading()
             val data: List<ApiTrackRecord> = parseApiResult(content)

@@ -1,4 +1,4 @@
-modLoader = "kotlinforforgel"
+modLoader = "kotlinforforge"
 loaderVersion = "${loader_version_range}"
 license = "${mod_license}"
 
@@ -9,10 +9,10 @@ displayName = "${mod_name}"
 authors = "${mod_authors}"
 displayTest = "MATCH_VERSION"
 description = '''${mod_description}'''
-logoFile= "../../resources/logo.png"
+logoFile = "logo.png"
 
 [modproperties.betterwitchhuts]
-    catalogueImageIcon="catalogue_icon.png"
+catalogueImageIcon = "catalogue_icon.png"
 
 [[dependencies."${mod_id}"]]
 modId = "forge"

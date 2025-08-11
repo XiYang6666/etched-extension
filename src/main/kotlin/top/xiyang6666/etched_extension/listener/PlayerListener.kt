@@ -8,12 +8,12 @@ import top.xiyang6666.etched_extension.Config
 import top.xiyang6666.etched_extension.Network
 import top.xiyang6666.etched_extension.packet.EBNRApiPacket
 
-class PlayerListener {
+object PlayerListener {
     @SubscribeEvent
     fun onPlayerLoggedIn(event: PlayerEvent.PlayerLoggedInEvent) {
         Network.CHANNEL.send(
             PacketDistributor.PLAYER.with { event.entity as ServerPlayer },
-            EBNRApiPacket(Config.ebnrApi.get())
+            EBNRApiPacket(Config.Common.ebnrApi.get())
         )
     }
 }

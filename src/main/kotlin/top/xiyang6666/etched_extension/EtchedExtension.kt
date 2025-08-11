@@ -2,13 +2,13 @@ package top.xiyang6666.etched_extension
 
 import com.mojang.logging.LogUtils
 import gg.moonflower.etched.api.sound.download.SoundSourceManager
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import org.slf4j.Logger
+import thedarkcolour.kotlinforforge.forge.FORGE_BUS
+import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
+import thedarkcolour.kotlinforforge.forge.MOD_BUS
 import top.xiyang6666.etched_extension.listener.PlayerListener
 import top.xiyang6666.etched_extension.source.EBNRApiSource
 import top.xiyang6666.etched_extension.source.MetingApiSource
@@ -22,20 +22,15 @@ class EtchedExtension {
     }
 
     init {
-        val modEventBus = FMLJavaModLoadingContext.get().modEventBus
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC)
-
-        modEventBus.addListener { event: FMLCommonSetupEvent ->
-            Network.register()
-
+        LOADING_CONTEXT.registerConfig(ModConfig.Type.COMMON, Config.Common.SPEC)
+        LOADING_CONTEXT.registerConfig(ModConfig.Type.CLIENT, Config.Client.SPEC)
+        Network.register()
+        FORGE_BUS.register(PlayerListener)
+        MOD_BUS.addListener { _: FMLCommonSetupEvent ->
             SoundSourceManager.registerSource(MetingApiSource())
             SoundSourceManager.registerSource(EBNRApiSource())
 
-            LOGGER.debug("Server ebnr api: ${Config.ebnrApi.get()}")
+            LOGGER.debug("Server ebnr api: {}", Config.Common.ebnrApi.get())
         }
-
-        MinecraftForge.EVENT_BUS.register(PlayerListener())
     }
-
 }
