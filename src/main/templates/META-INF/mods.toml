@@ -1,4 +1,4 @@
-modLoader = "javafml"
+modLoader = "kotlinforforgel"
 loaderVersion = "${loader_version_range}"
 license = "${mod_license}"
 
@@ -9,7 +9,7 @@ displayName = "${mod_name}"
 authors = "${mod_authors}"
 displayTest = "MATCH_VERSION"
 description = '''${mod_description}'''
-logoFile="logo.png"
+logoFile= "../../resources/logo.png"
 
 [modproperties.betterwitchhuts]
     catalogueImageIcon="catalogue_icon.png"

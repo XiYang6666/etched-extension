@@ -1,13 +1,11 @@
 pluginManagement {
     repositories {
+        mavenLocal()
         gradlePluginPortal()
         maven {
             name = 'MinecraftForge'
             url = 'https://maven.minecraftforge.net/'
         }
-    }
-    plugins {
-        id 'org.jetbrains.kotlin.jvm' version '2.0.21'
     }
 }
 
