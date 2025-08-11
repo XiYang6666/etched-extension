@@ -31,7 +31,7 @@
 
 ## 示例
 
-![example](docs/example.png)
+![example](docs/images/example.png)
 
 ---
 
