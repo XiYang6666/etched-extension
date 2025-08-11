@@ -11,6 +11,7 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.network.handling.IPayloadContext
+import top.xiyang6666.etched_extension.Config
 import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
@@ -39,26 +40,18 @@ data class EBNRApiPacket(val api: String) : CustomPacketPayload {
         ctx.enqueueWork {
             EtchedExtension.clientEbnrApi = this.api
             EtchedExtension.LOGGER.debug("Synchronized server ebnr api: ${this.api}")
-            val instance = Minecraft.getInstance()
-            CompletableFuture.supplyAsync {
+            Utils.asyncWarning(Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)) {
                 try {
                     Utils.get(URI(this.api).toURL(), null, "").use { stream ->
                         val content = stream.reader().readText()
                         val result = Gson().fromJsonTyped<EbnrApiResult>(content)
-                        return@supplyAsync result.isVip
+                        !result.isVip
                     }
                 } catch (e: Exception) {
                     EtchedExtension.LOGGER.warn(e)
-                    return@supplyAsync false
-                }
-            }.thenApply {
-                if (!it) instance.submit {
-                    instance.player?.sendSystemMessage(
-                        Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)
-                    )
+                    true
                 }
             }
-
         }
     }
 

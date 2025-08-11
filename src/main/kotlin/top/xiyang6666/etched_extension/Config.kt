@@ -14,6 +14,9 @@ object Config {
 
     object Client {
         private val BUILDER = ModConfigSpec.Builder()
+        val showWarnings: ModConfigSpec.BooleanValue = BUILDER
+            .comment("Configure whether to display API and download related errors")
+            .define("showWarnings", true)
         val albumCover = AlbumCover(BUILDER)
         val SPEC: ModConfigSpec = BUILDER.build()
 

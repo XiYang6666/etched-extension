@@ -1,3 +1,4 @@
 {
-  "message.no_vip": "警告: 当前的 ebnr API 没有网易云音乐 VIP, 部分 VIP 音乐虽然能成功蚀刻但可能无法正常播放."
+  "message.no_vip": "警告: 当前的 ebnr API 没有网易云音乐 VIP, 部分 VIP 音乐虽然能成功蚀刻但可能无法正常播放.",
+  "message.vip_song": "无法下载 %s, 可能是该歌曲需要vip."
 }
