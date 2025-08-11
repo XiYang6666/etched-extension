@@ -2,9 +2,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "1.20.1", "1.21.1" ]
+    branches: [ "1.20.1" ]
   pull_request:
-    branches: [ "1.20.1", "1.21.1" ]
+    branches: [ "1.20.1" ]
 
 jobs:
   build:
@@ -19,14 +19,14 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ github.ref_name == '1.21.1' && '21' || '17' }}
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4.4.2
 
       - name: Build with Gradle Wrapper
-        run:  ./gradlew build
+        run: ./gradlew build
 
   dependency-submission:
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ github.ref_name == '1.21.1' && '21' || '17' }}
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Generate and submit dependency graph
