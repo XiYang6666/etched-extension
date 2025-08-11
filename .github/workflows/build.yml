@@ -27,3 +27,9 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: etched_extension-forge-dev+mc1.20.1.jar
+          path: build/libs/*.jar
