@@ -15,6 +15,9 @@ object Config {
 
     object Client {
         private val BUILDER = ForgeConfigSpec.Builder()
+        val showWarnings: ForgeConfigSpec.BooleanValue = BUILDER
+            .comment("Configure whether to display API and download related errors")
+            .define("showWarnings", true)
         val albumCover = AlbumCover(BUILDER)
         val SPEC: ForgeConfigSpec = BUILDER.build()
 

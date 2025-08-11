@@ -1,3 +1,4 @@
 {
-  "message.no_vip": "Warning: The current ebnr API does not have NetEase Cloud Music VIP. Although some VIP music can be successfully etched, it may not play properly."
+  "message.no_vip": "Warning: The current ebnr API does not have NetEase Cloud Music VIP. Although some VIP music can be successfully etched, it may not play properly.",
+  "message.vip_song": "Unable to download song %s, it may be due to the need for VIP."
 }
