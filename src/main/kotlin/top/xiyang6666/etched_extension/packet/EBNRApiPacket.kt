@@ -4,19 +4,16 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import io.netty.buffer.ByteBuf
 import net.minecraft.ChatFormatting
-import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.network.handling.IPayloadContext
-import top.xiyang6666.etched_extension.Config
 import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
 import java.net.URI
-import java.util.concurrent.CompletableFuture
 
 
 data class EBNRApiPacket(val api: String) : CustomPacketPayload {
