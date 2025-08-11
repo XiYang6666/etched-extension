@@ -11,6 +11,7 @@ import top.xiyang6666.etched_extension.Config
 import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
+import java.lang.Exception
 import java.net.Proxy
 import java.net.URI
 import java.net.URISyntaxException
@@ -23,8 +24,7 @@ class EBNRApiSource : SoundDownloadSource {
     }
 
     data class Artist(
-        val id: Long,
-        val name: String
+        val id: Long, val name: String
     )
 
     data class SongInfo(
@@ -37,16 +37,14 @@ class EBNRApiSource : SoundDownloadSource {
     data class AlbumInfo(
         val id: Long,
         val name: String,
-        @SerializedName("cover_url")
-        val coverUrl: String,
+        @SerializedName("cover_url") val coverUrl: String,
     )
 
     data class Album(
         val id: Long,
         val name: String,
         val artists: List<Artist>,
-        @SerializedName("cover_url")
-        val coverUrl: String,
+        @SerializedName("cover_url") val coverUrl: String,
         val songs: List<SongInfo>,
     )
 
@@ -73,16 +71,14 @@ class EBNRApiSource : SoundDownloadSource {
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
         val uri = URI(s)
-        val baseApi = Config.CONFIG.ebnrApi.get().removeSuffix("/")
+        val baseApi = Config.Common.ebnrApi.get().removeSuffix("/")
         when (uri.path) {
             "/song" -> Utils.get(URI("$baseApi/info/$uri").toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val song = parseSong(content)
                 return listOf(
                     TrackData(
-                        uri.toString(),
-                        song.artists.joinToString("/") { it.name },
-                        Component.literal(song.name)
+                        uri.toString(), song.artists.joinToString("/") { it.name }, Component.literal(song.name)
                     )
                 )
             }
@@ -92,9 +88,7 @@ class EBNRApiSource : SoundDownloadSource {
                 val album = parseAlbum(content)
                 return listOf(
                     TrackData(
-                        uri.toString(),
-                        album.artists.joinToString("/") { it.name },
-                        Component.literal(album.name)
+                        uri.toString(), album.artists.joinToString("/") { it.name }, Component.literal(album.name)
                     )
                 ) + album.songs.map { song ->
                     TrackData(
@@ -113,10 +107,10 @@ class EBNRApiSource : SoundDownloadSource {
         s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
         val uri = URI(s)
-        if (uri.path !== "/album") {
+        if (uri.path != "/album") {
             return Optional.empty()
         }
-        // 我不知道它是在哪执行的, 在我的游戏中从来没成功获取到封面
+        // 这个函数是客户端执行的
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
         Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
             val content = stream.reader().readText()

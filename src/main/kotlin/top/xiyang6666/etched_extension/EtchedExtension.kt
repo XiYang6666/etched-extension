@@ -21,14 +21,15 @@ class EtchedExtension(container: ModContainer) {
     }
 
     init {
-        container.registerConfig(ModConfig.Type.COMMON, Config.SPEC)
+        container.registerConfig(ModConfig.Type.COMMON, Config.Common.SPEC)
+        container.registerConfig(ModConfig.Type.CLIENT, Config.Client.SPEC)
         MOD_BUS.register(Network)
         FORGE_BUS.register(PlayerListener)
         MOD_BUS.addListener { event: FMLCommonSetupEvent ->
             SoundSourceManager.registerSource(MetingApiSource())
             SoundSourceManager.registerSource(EBNRApiSource())
 
-            LOGGER.debug("Server ebnr api: {}", Config.CONFIG.ebnrApi.get())
+            LOGGER.debug("Server ebnr api: {}", Config.Common.ebnrApi.get())
         }
     }
 }

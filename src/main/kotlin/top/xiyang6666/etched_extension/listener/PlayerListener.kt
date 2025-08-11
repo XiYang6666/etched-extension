@@ -10,6 +10,6 @@ import top.xiyang6666.etched_extension.packet.EBNRApiPacket
 object PlayerListener {
     @SubscribeEvent
     fun onPlayerLoggedIn(event: PlayerEvent.PlayerLoggedInEvent) {
-        PacketDistributor.sendToPlayer(event.entity as ServerPlayer, EBNRApiPacket(Config.CONFIG.ebnrApi.get()))
+        PacketDistributor.sendToPlayer(event.entity as ServerPlayer, EBNRApiPacket(Config.Common.ebnrApi.get()))
     }
 }

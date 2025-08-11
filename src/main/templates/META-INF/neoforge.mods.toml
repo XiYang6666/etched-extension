@@ -8,10 +8,13 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
-logoFile="logo.png"
+logoFile = "logo.png"
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
 
 [modproperties.betterwitchhuts]
-catalogueImageIcon="catalogue_icon.png"
+catalogueImageIcon = "catalogue_icon.png"
 
 [[dependencies."${mod_id}"]]
 modId = "neoforge"

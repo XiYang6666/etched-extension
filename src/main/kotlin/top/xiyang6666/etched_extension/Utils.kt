@@ -6,12 +6,14 @@ import gg.moonflower.etched.api.util.DownloadProgressListener
 import gg.moonflower.etched.api.util.ProgressTrackingInputStream
 import net.minecraft.network.chat.Component
 import java.io.InputStream
+import java.io.Reader
 import java.net.HttpURLConnection
 import java.net.URL
 
 object Utils {
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
-    
+    inline fun <reified T> Gson.fromJsonTyped(reader: Reader): T = fromJson(reader, object : TypeToken<T>() {}.type)
+
     fun get(url: URL, listener: DownloadProgressListener?, apiName: String): InputStream {
         val questionComponent = Component.translatable("sound_source.etched.requesting", Component.literal(apiName))
         listener?.progressStartRequest(questionComponent)
