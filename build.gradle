@@ -12,6 +12,7 @@ version = mod_version
 // 依赖
 
 repositories {
+    mavenCentral()
     maven {
         name = 'Kotlin for Forge'
         url = 'https://thedarkcolour.github.io/KotlinForForge/'
