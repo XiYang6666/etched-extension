@@ -11,7 +11,6 @@ import top.xiyang6666.etched_extension.Config
 import top.xiyang6666.etched_extension.EtchedExtension
 import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
-import java.lang.Exception
 import java.net.Proxy
 import java.net.URI
 import java.net.URISyntaxException
@@ -123,7 +122,7 @@ class EBNRApiSource : SoundDownloadSource {
         try {
             val uri = URI(s)
             return uri.host == "music.163.com" && setOf("/song", "/playlist", "/album").contains(uri.path)
-        } catch (e: URISyntaxException) {
+        } catch (_: URISyntaxException) {
             return false
         }
     }

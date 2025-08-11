@@ -25,7 +25,7 @@ class EtchedExtension(container: ModContainer) {
         container.registerConfig(ModConfig.Type.CLIENT, Config.Client.SPEC)
         MOD_BUS.register(Network)
         FORGE_BUS.register(PlayerListener)
-        MOD_BUS.addListener { event: FMLCommonSetupEvent ->
+        MOD_BUS.addListener { _: FMLCommonSetupEvent ->
             SoundSourceManager.registerSource(MetingApiSource())
             SoundSourceManager.registerSource(EBNRApiSource())
 
