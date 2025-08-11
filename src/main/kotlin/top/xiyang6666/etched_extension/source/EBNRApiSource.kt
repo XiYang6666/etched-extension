@@ -47,9 +47,24 @@ class EBNRApiSource : SoundDownloadSource {
         val songs: List<SongInfo>,
     )
 
+    data class Creator(
+        @SerializedName("user_id") val userId: Long,
+        val nickname: String,
+    )
+
+    data class Playlist(
+        val id: Long,
+        val name: String,
+        @SerializedName("cover_url") val coverUrl: String,
+        val creator: Creator,
+        val tracks: List<SongInfo>,
+    )
+
     private fun parseSong(content: String): SongInfo = Gson().fromJsonTyped(content)
 
     private fun parseAlbum(content: String): Album = Gson().fromJsonTyped(content)
+
+    private fun parsePlaylist(content: String): Playlist = Gson().fromJsonTyped(content)
 
     override fun resolveUrl(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<URL> {
         val uri = URI(s)
@@ -62,6 +77,12 @@ class EBNRApiSource : SoundDownloadSource {
                 val content = stream.reader().readText()
                 val album = parseAlbum(content)
                 return album.songs.map { URI("$baseApi/audio/?id=${it.id}").toURL() }
+            }
+
+            "/playlist" -> Utils.get(URI("$baseApi/playlist/$uri").toURL(), listener, API_NAME).use { stream ->
+                val content = stream.reader().readText()
+                val playlist = parsePlaylist(content)
+                return playlist.tracks.map { URI("$baseApi/audio/?id=${it.id}").toURL() }
             }
 
             else -> throw RuntimeException("Unknown or unsupported type: ${uri.path}")
@@ -98,6 +119,22 @@ class EBNRApiSource : SoundDownloadSource {
                 }
             }
 
+            "/playlist" -> Utils.get(URI("$baseApi/playlist/$uri").toURL(), listener, API_NAME).use { stream ->
+                val content = stream.reader().readText()
+                val playlist = parsePlaylist(content)
+                return listOf(
+                    TrackData(
+                        uri.toString(), playlist.creator.nickname, Component.literal(playlist.name)
+                    )
+                ) + playlist.tracks.map { song ->
+                    TrackData(
+                        "https://music.163.com/song?id=${song.id}",
+                        song.artists.joinToString("/") { it.name },
+                        Component.literal(song.name)
+                    )
+                }
+            }
+
             else -> throw RuntimeException("Unknown or unsupported type: ${uri.path}")
         }
     }
@@ -106,15 +143,22 @@ class EBNRApiSource : SoundDownloadSource {
         s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
         val uri = URI(s)
-        if (uri.path != "/album") {
-            return Optional.empty()
-        }
         // 这个函数是客户端执行的
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
-        Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
-            val content = stream.reader().readText()
-            val album = parseAlbum(content)
-            return Optional.of(album.coverUrl)
+        when (uri.path) {
+            "/album" -> Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
+                val content = stream.reader().readText()
+                val album = parseAlbum(content)
+                return Optional.of(album.coverUrl)
+            }
+
+            "/playlist" -> Utils.get(URI("$baseApi/playlist/$uri").toURL(), listener, API_NAME).use { stream ->
+                val content = stream.reader().readText()
+                val playlist = parsePlaylist(content)
+                return Optional.of(playlist.coverUrl)
+            }
+
+            else -> return Optional.empty()
         }
     }
 
