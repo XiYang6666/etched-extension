@@ -15,7 +15,7 @@ import java.util.*
 class MetingApiSource : SoundDownloadSource {
 
     companion object {
-        private val API_NAME = "Meting-Api"
+        private const val API_NAME = "Meting-Api"
         lateinit var instance: MetingApiSource
     }
 

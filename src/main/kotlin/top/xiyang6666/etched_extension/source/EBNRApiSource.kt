@@ -19,7 +19,7 @@ import java.util.*
 
 class EBNRApiSource : SoundDownloadSource {
     companion object {
-        const val API_NAME = "EBNR-APi"
+        private const val API_NAME = "EBNR-APi"
     }
 
     data class Artist(
