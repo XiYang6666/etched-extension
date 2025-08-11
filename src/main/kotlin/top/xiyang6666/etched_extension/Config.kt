@@ -33,7 +33,7 @@ object Config {
                         "16 = Etched default.",
                         "Recommended range: 1-64"
                     )
-                    .defineInRange("colorDivisions", 16, 1, 256)
+                    .defineInRange("colorDivisions", 1, 1, 256)
 
                 coverResolution = builder
                     .comment(
