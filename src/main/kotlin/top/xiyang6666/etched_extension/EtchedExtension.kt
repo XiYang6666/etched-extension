@@ -2,10 +2,12 @@ package top.xiyang6666.etched_extension
 
 import gg.moonflower.etched.api.sound.download.SoundSourceManager
 import net.neoforged.fml.ModContainer
+import net.neoforged.fml.ModList
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import top.xiyang6666.etched_extension.listener.PlayerListener
@@ -16,7 +18,8 @@ import top.xiyang6666.etched_extension.source.MetingApiSource
 class EtchedExtension(container: ModContainer) {
     companion object {
         const val MODID: String = "etched_extension"
-        val LOGGER = LogManager.getLogger(MODID)
+        val LOGGER: Logger = LogManager.getLogger(MODID)
+        val version = ModList.get().getModContainerById(MODID).get().modInfo.version.toString()
         lateinit var clientEbnrApi: String
     }
 
