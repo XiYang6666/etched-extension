@@ -21,7 +21,7 @@ object Utils {
         listener?.progressStartRequest(questionComponent)
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "Etched-Extension")
+        connection.setRequestProperty("User-Agent", "Etched-Extension/${EtchedExtension.version}")
         val responseCode = connection.responseCode
         if (responseCode != HttpURLConnection.HTTP_OK) throw RuntimeException("Could not resolve: $url (HTTP $responseCode)")
         val size = connection.contentLengthLong

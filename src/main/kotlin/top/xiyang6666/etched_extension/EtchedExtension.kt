@@ -2,6 +2,7 @@ package top.xiyang6666.etched_extension
 
 import com.mojang.logging.LogUtils
 import gg.moonflower.etched.api.sound.download.SoundSourceManager
+import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
@@ -18,6 +19,7 @@ class EtchedExtension {
     companion object {
         const val MODID: String = "etched_extension"
         val LOGGER: Logger = LogUtils.getLogger()
+        val version = ModList.get().getModContainerById(MODID).get().modInfo.version.toString()
         lateinit var clientEbnrApi: String
     }
 
