@@ -11,18 +11,23 @@ import java.io.Reader
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
 
 object Utils {
+    val UserAgent = "Etched-Extension/${EtchedExtension.version}"
+
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
     inline fun <reified T> Gson.fromJsonTyped(reader: Reader): T = fromJson(reader, object : TypeToken<T>() {}.type)
 
-    fun get(url: URL, listener: DownloadProgressListener?, apiName: String): InputStream {
+    fun etchedGet(url: URL, listener: DownloadProgressListener?, apiName: String): InputStream {
         val questionComponent = Component.translatable("sound_source.etched.requesting", Component.literal(apiName))
         listener?.progressStartRequest(questionComponent)
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", "Etched-Extension/${EtchedExtension.version}")
+        connection.setRequestProperty("User-Agent", UserAgent)
         val responseCode = connection.responseCode
         if (responseCode != HttpURLConnection.HTTP_OK) throw RuntimeException("Could not resolve: $url (HTTP $responseCode)")
         val size = connection.contentLengthLong
@@ -33,8 +38,17 @@ object Utils {
         }
     }
 
-    fun get(url: String, listener: DownloadProgressListener?, apiName: String): InputStream =
-        get(URI(url).toURL(), listener, apiName)
+    fun etchedGet(url: String, listener: DownloadProgressListener?, apiName: String): InputStream =
+        etchedGet(URI(url).toURL(), listener, apiName)
+
+    fun asyncGet(url: String): CompletableFuture<HttpResponse<String>> {
+        val client: HttpClient = HttpClient.newHttpClient()
+        val req = HttpRequest.newBuilder(URI(url))
+            .GET()
+            .setHeader("User-Agent", UserAgent)
+            .build()
+        return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+    }
 
     fun asyncWarning(message: Component, body: () -> Boolean) {
         if (!Config.Client.showWarnings.get()) return

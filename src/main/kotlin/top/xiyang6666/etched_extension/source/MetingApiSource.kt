@@ -48,7 +48,7 @@ class MetingApiSource : SoundDownloadSource {
             key to value
         } ?: emptyMap()
         when (queryMap["type"]) {
-            "playlist", "song" -> Utils.get(uri.toURL(), listener, API_NAME).use { stream ->
+            "playlist", "song" -> Utils.etchedGet(uri.toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val data: List<ApiTrackRecord> = parseApiResult(content)
                 return data.map { URI(it.url).toURL() }
@@ -79,7 +79,7 @@ class MetingApiSource : SoundDownloadSource {
             key to value
         } ?: emptyMap()
         when (queryMap["type"]) {
-            "playlist" -> Utils.get(uri.toURL(), listener, API_NAME).use { stream ->
+            "playlist" -> Utils.etchedGet(uri.toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val data: List<ApiTrackRecord> = parseApiResult(content)
                 val playListInfo = TrackData(uri.toString(), "Unknown", Component.literal("playlist ${queryMap["id"]}"))
@@ -87,7 +87,7 @@ class MetingApiSource : SoundDownloadSource {
                 return listOf(playListInfo) + tracks
             }
 
-            "song" -> Utils.get(uri.toURL(), listener, API_NAME).use { stream ->
+            "song" -> Utils.etchedGet(uri.toURL(), listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val data: List<ApiTrackRecord> = parseApiResult(content)
                 val songData = data[0]
@@ -112,7 +112,7 @@ class MetingApiSource : SoundDownloadSource {
     override fun resolveAlbumCover(
         s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
-        return Utils.get(URI(s).toURL(), listener, API_NAME).use { inputStream ->
+        return Utils.etchedGet(URI(s).toURL(), listener, API_NAME).use { inputStream ->
             val content = inputStream.reader().readText()
             listener?.progressStartLoading()
             val data: List<ApiTrackRecord> = parseApiResult(content)
