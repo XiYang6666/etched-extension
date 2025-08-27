@@ -39,7 +39,7 @@ data class EBNRApiPacket(val api: String) : CustomPacketPayload {
             EtchedExtension.LOGGER.debug("Synchronized server ebnr api: ${this.api}")
             Utils.asyncWarning(Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)) {
                 try {
-                    Utils.get(URI(this.api).toURL(), null, "").use { stream ->
+                    Utils.etchedGet(URI(this.api).toURL(), null, "").use { stream ->
                         val content = stream.reader().readText()
                         val result = Gson().fromJsonTyped<EbnrApiResult>(content)
                         !result.isVip
