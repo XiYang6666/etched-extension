@@ -4,8 +4,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import gg.moonflower.etched.api.util.DownloadProgressListener
 import gg.moonflower.etched.api.util.ProgressTrackingInputStream
+import gg.moonflower.etched.core.Etched
+import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
+import net.neoforged.fml.ModList
 import java.io.InputStream
 import java.io.Reader
 import java.net.HttpURLConnection
@@ -17,7 +20,10 @@ import java.net.http.HttpResponse
 import java.util.concurrent.CompletableFuture
 
 object Utils {
-    val UserAgent = "Etched-Extension/${EtchedExtension.version}"
+    val minecraftVersion: String = SharedConstants.getCurrentVersion().name
+    val etchedVersion: String = ModList.get().getModContainerById(Etched.MOD_ID).get().modInfo.version.toString()
+    val UserAgent =
+        "MinecraftJava/$minecraftVersion Etched/$etchedVersion Etched-Extension/${EtchedExtension.version}"
 
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
     inline fun <reified T> Gson.fromJsonTyped(reader: Reader): T = fromJson(reader, object : TypeToken<T>() {}.type)
