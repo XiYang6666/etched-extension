@@ -13,12 +13,12 @@ import top.xiyang6666.etched_extension.Utils
 import top.xiyang6666.etched_extension.Utils.fromJsonTyped
 import java.net.Proxy
 import java.net.URI
-import java.net.URISyntaxException
 import java.net.URL
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.*
+import top.xiyang6666.etched_extension.Utils.NeteaseLinkInfo.Type.*
 
 class EBNRApiSource : SoundDownloadSource {
     companion object {
@@ -73,10 +73,11 @@ class EBNRApiSource : SoundDownloadSource {
     private fun parseAudio(content: String): Audio = Gson().fromJsonTyped(content)
 
     override fun resolveUrl(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<URL> {
-        val uri = URI(s)
         // 这个函数是客户端执行的
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
-        if (uri.path != "/song") throw RuntimeException("Not a song url: $uri")
+        val linkInfo = Utils.parseNeteaseLink(s) ?: throw RuntimeException("Invalid link: $s")
+        val link = linkInfo.normalize()
+        if (linkInfo.type != SONG) throw RuntimeException("Not a song link: $s")
         Utils.asyncWarning {
             val client: HttpClient = HttpClient.newHttpClient()
             val infoReq = HttpRequest.newBuilder(URI("$baseApi/info/$s"))
@@ -87,12 +88,8 @@ class EBNRApiSource : SoundDownloadSource {
                 .GET()
                 .setHeader("User-Agent", "Etched-Extension")
                 .build()
-            val infoFuture = client.sendAsync(
-                infoReq, HttpResponse.BodyHandlers.ofString()
-            )
-            val audioFuture = client.sendAsync(
-                audioReq, HttpResponse.BodyHandlers.ofString()
-            )
+            val infoFuture = client.sendAsync(infoReq, HttpResponse.BodyHandlers.ofString())
+            val audioFuture = client.sendAsync(audioReq, HttpResponse.BodyHandlers.ofString())
             try {
                 val audio = parseAudio(audioFuture.get().body())
                 if (audio.url != null) return@asyncWarning null
@@ -103,29 +100,34 @@ class EBNRApiSource : SoundDownloadSource {
                 null
             }
         }
-        return listOf(URI("$baseApi/resolve/$s").toURL())
+        return listOf(URI("$baseApi/resolve/$link").toURL())
     }
 
     override fun resolveTracks(s: String, listener: DownloadProgressListener?, proxy: Proxy): List<TrackData> {
-        val uri = URI(s)
         val baseApi = Config.Common.ebnrApi.get().removeSuffix("/")
-        when (uri.path) {
-            "/song" -> Utils.get(URI("$baseApi/info/$uri").toURL(), listener, API_NAME).use { stream ->
+        val linkInfo = Utils.parseNeteaseLink(s) ?: throw RuntimeException("Invalid link: $s")
+        val link = linkInfo.normalize()
+        when (linkInfo.type) {
+            SONG -> Utils.get("$baseApi/info/$link", listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val song = parseSong(content)
                 return listOf(
                     TrackData(
-                        uri.toString(), song.artists.joinToString("/") { it.name }, Component.literal(song.name)
+                        link,
+                        song.artists.joinToString("/") { it.name },
+                        Component.literal(song.name)
                     )
                 )
             }
 
-            "/album" -> Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
+            ALBUM -> Utils.get("$baseApi/album/$link", listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val album = parseAlbum(content)
                 return listOf(
                     TrackData(
-                        uri.toString(), album.artists.joinToString("/") { it.name }, Component.literal(album.name)
+                        link,
+                        album.artists.joinToString("/") { it.name },
+                        Component.literal(album.name)
                     )
                 ) + album.songs.map { song ->
                     TrackData(
@@ -136,12 +138,14 @@ class EBNRApiSource : SoundDownloadSource {
                 }
             }
 
-            "/playlist" -> Utils.get(URI("$baseApi/playlist/$uri").toURL(), listener, API_NAME).use { stream ->
+            PLAYLIST -> Utils.get("$baseApi/playlist/$link", listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val playlist = parsePlaylist(content)
                 return listOf(
                     TrackData(
-                        uri.toString(), playlist.creator.nickname, Component.literal(playlist.name)
+                        link,
+                        playlist.creator.nickname,
+                        Component.literal(playlist.name)
                     )
                 ) + playlist.tracks.map { song ->
                     TrackData(
@@ -151,25 +155,24 @@ class EBNRApiSource : SoundDownloadSource {
                     )
                 }
             }
-
-            else -> throw RuntimeException("Unknown or unsupported type: ${uri.path}")
         }
     }
 
     override fun resolveAlbumCover(
         s: String, listener: DownloadProgressListener?, proxy: Proxy, manager: ResourceManager
     ): Optional<String> {
-        val uri = URI(s)
         // 这个函数是客户端执行的
         val baseApi = EtchedExtension.clientEbnrApi.removeSuffix("/")
-        when (uri.path) {
-            "/album" -> Utils.get(URI("$baseApi/album/$uri").toURL(), listener, API_NAME).use { stream ->
+        val linkInfo = Utils.parseNeteaseLink(s) ?: throw RuntimeException("Invalid link: $s")
+        val link = linkInfo.normalize()
+        when (linkInfo.type) {
+            ALBUM -> Utils.get("$baseApi/album/$link", listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val album = parseAlbum(content)
                 return Optional.of(album.coverUrl)
             }
 
-            "/playlist" -> Utils.get(URI("$baseApi/playlist/$uri").toURL(), listener, API_NAME).use { stream ->
+            PLAYLIST -> Utils.get("$baseApi/playlist/$link", listener, API_NAME).use { stream ->
                 val content = stream.reader().readText()
                 val playlist = parsePlaylist(content)
                 return Optional.of(playlist.coverUrl)
@@ -179,20 +182,7 @@ class EBNRApiSource : SoundDownloadSource {
         }
     }
 
-    override fun isValidUrl(s: String): Boolean {
-        try {
-            val uri = URI(s)
-            return uri.host == "music.163.com" && setOf("/song", "/playlist", "/album").contains(uri.path)
-        } catch (_: URISyntaxException) {
-            return false
-        }
-    }
-
-    override fun isTemporary(s: String): Boolean {
-        return true
-    }
-
-    override fun getApiName(): String {
-        return "ebnr-api"
-    }
+    override fun isValidUrl(s: String) = Utils.parseNeteaseLink(s) != null
+    override fun isTemporary(s: String) = true
+    override fun getApiName() = "ebnr-api"
 }
