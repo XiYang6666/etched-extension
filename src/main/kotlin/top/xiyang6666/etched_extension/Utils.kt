@@ -56,15 +56,6 @@ object Utils {
         return client.sendAsync(req, HttpResponse.BodyHandlers.ofString())
     }
 
-    fun asyncWarning(message: Component, body: () -> Boolean) {
-        if (!Config.Client.showWarnings.get()) return
-        val instance = Minecraft.getInstance()
-        CompletableFuture.supplyAsync(body).thenApply {
-            if (!it) return@thenApply
-            instance.submit { instance.player?.sendSystemMessage(message) }
-        }
-    }
-
     fun asyncWarning(body: () -> Component?) {
         if (!Config.Client.showWarnings.get()) return
         val instance = Minecraft.getInstance()
