@@ -41,6 +41,7 @@ data class EBNRApiPacket(val api: String) {
                         else Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)
                     }
                 } catch (e: Exception) {
+                    EtchedExtension.LOGGER.warn(e.message)
                     val issueStyle = Style.EMPTY
                         .withClickEvent(
                             ClickEvent(
