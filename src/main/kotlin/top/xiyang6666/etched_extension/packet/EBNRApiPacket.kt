@@ -4,7 +4,10 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import io.netty.buffer.ByteBuf
 import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.ClickEvent
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.HoverEvent
+import net.minecraft.network.chat.Style
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -37,16 +40,33 @@ data class EBNRApiPacket(val api: String) : CustomPacketPayload {
         ctx.enqueueWork {
             EtchedExtension.clientEbnrApi = this.api
             EtchedExtension.LOGGER.debug("Synchronized server ebnr api: ${this.api}")
-            Utils.asyncWarning(Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)) {
+            Utils.asyncWarning {
                 try {
                     Utils.etchedGet(URI(this.api).toURL(), null, "").use { stream ->
                         val content = stream.reader().readText()
                         val result = Gson().fromJsonTyped<EbnrApiResult>(content)
-                        !result.isVip
+                        return@asyncWarning if (result.isVip) null
+                        else Component.translatable("message.no_vip").withStyle(ChatFormatting.YELLOW)
                     }
                 } catch (e: Exception) {
                     EtchedExtension.LOGGER.warn(e)
-                    true
+                    val issueStyle = Style.EMPTY
+                        .withClickEvent(
+                            ClickEvent(
+                                ClickEvent.Action.OPEN_URL,
+                                "https://github.com/XiYang6666/etched-extension/issues/4"
+                            )
+                        )
+                        .withHoverEvent(
+                            HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                Component.literal("https://github.com/XiYang6666/etched-extension/issues/4")
+                            )
+                        ).withColor(ChatFormatting.OBFUSCATED)
+                    val issueLink = Component.literal("#4").withStyle(issueStyle)
+                    return@asyncWarning Component.translatable("message.bad_api", this.api, e.message, issueLink)
+                        .withStyle(ChatFormatting.YELLOW)
+
                 }
             }
         }
