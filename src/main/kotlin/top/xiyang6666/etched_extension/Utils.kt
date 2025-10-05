@@ -65,6 +65,8 @@ object Utils {
         }
     }
 
+    fun verifyUrl(str: String) = runCatching { URI(str).toURL() }.getOrNull() != null
+
     data class NeteaseLinkInfo(
         val type: Type,
         val id: Long

@@ -32,7 +32,11 @@ class EtchedExtension(container: ModContainer) {
             SoundSourceManager.registerSource(MetingApiSource())
             SoundSourceManager.registerSource(EBNRApiSource())
 
-            LOGGER.debug("Server ebnr api: {}", Config.Common.ebnrApi.get())
+            // 校验
+            val ebnrApi = Config.Common.ebnrApi.get()
+            if (!Utils.verifyUrl(ebnrApi))
+                throw RuntimeException("Configuration item ebnrAPI: $ebnrApi is not a valid URL. Please check the configuration.")
+            LOGGER.debug("Server ebnr api: $ebnrApi")
         }
     }
 }
