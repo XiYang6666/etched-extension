@@ -41,18 +41,11 @@ dependencies {
     implementation name: "etched-3.0.4"
 }
 
-// mixin
-
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-
-    config "${mod_id}.mixins.json"
-}
-
 // 语言
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 kotlin.jvmToolchain(17)
+
 
 // forge
 
@@ -104,6 +97,14 @@ minecraft {
             args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
+}
+
+// mixin
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+
+    config "${mod_id}.mixins.json"
 }
 
 
