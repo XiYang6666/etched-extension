@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component
 import net.neoforged.fml.ModList
 import java.io.InputStream
 import java.io.Reader
-import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 import java.net.http.HttpClient
@@ -22,8 +21,7 @@ import java.util.concurrent.CompletableFuture
 object Utils {
     val minecraftVersion: String = SharedConstants.getCurrentVersion().name
     val etchedVersion: String = ModList.get().getModContainerById(Etched.MOD_ID).get().modInfo.version.toString()
-    val UserAgent =
-        "MinecraftJava/$minecraftVersion Etched/$etchedVersion Etched-Extension/${EtchedExtension.version}"
+    val UserAgent = "MinecraftJava/$minecraftVersion Etched/$etchedVersion Etched-Extension/${EtchedExtension.version}"
 
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
     inline fun <reified T> Gson.fromJsonTyped(reader: Reader): T = fromJson(reader, object : TypeToken<T>() {}.type)
@@ -31,16 +29,29 @@ object Utils {
     fun etchedGet(url: URL, listener: DownloadProgressListener?, apiName: String): InputStream {
         val questionComponent = Component.translatable("sound_source.etched.requesting", Component.literal(apiName))
         listener?.progressStartRequest(questionComponent)
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-        connection.setRequestProperty("User-Agent", UserAgent)
-        val responseCode = connection.responseCode
-        if (responseCode != HttpURLConnection.HTTP_OK) throw RuntimeException("Could not resolve: $url (HTTP $responseCode)")
-        val size = connection.contentLengthLong
-        return if (size != -1L && listener != null) {
-            ProgressTrackingInputStream(connection.inputStream, size, listener)
+        val client = HttpClient.newBuilder()
+            .followRedirects(HttpClient.Redirect.ALWAYS)
+            .build()
+        val req = HttpRequest.newBuilder()
+            .uri(url.toURI())
+            .GET()
+            .header("User-Agent", UserAgent)
+            .build()
+        val response = client.send(req, HttpResponse.BodyHandlers.ofInputStream())
+        val responseCode = response.statusCode()
+        if (responseCode != 200) {
+            response.body().close()
+            throw RuntimeException("Could not resolve: $url (HTTP $responseCode)")
+        }
+        val contentLength = response.headers()
+            .firstValueAsLong("Content-Length")
+            .orElse(-1L)
+        val input = response.body()
+
+        return if (contentLength != -1L && listener != null) {
+            ProgressTrackingInputStream(input, contentLength, listener)
         } else {
-            connection.inputStream
+            input
         }
     }
 
@@ -48,7 +59,9 @@ object Utils {
         etchedGet(URI(url).toURL(), listener, apiName)
 
     fun asyncGet(url: String): CompletableFuture<HttpResponse<String>> {
-        val client: HttpClient = HttpClient.newHttpClient()
+        val client: HttpClient = HttpClient.newBuilder()
+            .followRedirects(HttpClient.Redirect.ALWAYS)
+            .build()
         val req = HttpRequest.newBuilder(URI(url))
             .GET()
             .setHeader("User-Agent", UserAgent)
