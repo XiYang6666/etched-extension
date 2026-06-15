@@ -9,6 +9,7 @@ import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.neoforged.fml.ModList
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion
 import java.io.InputStream
 import java.io.Reader
 import java.net.URI
@@ -20,8 +21,15 @@ import java.util.concurrent.CompletableFuture
 
 object Utils {
     val minecraftVersion: String = SharedConstants.getCurrentVersion().name
+    val modLoader: String = "NeoForge"
+    val modLoaderVersion: String = NeoForgeVersion.getVersion()
     val etchedVersion: String = ModList.get().getModContainerById(Etched.MOD_ID).get().modInfo.version.toString()
-    val UserAgent = "MinecraftJava/$minecraftVersion Etched/$etchedVersion Etched-Extension/${EtchedExtension.version}"
+    val UserAgent = listOf(
+        "MinecraftJava/$minecraftVersion",
+        "Etched/$etchedVersion ",
+        "$modLoader/$modLoaderVersion",
+        "Etched-Extension/${EtchedExtension.version}",
+    ).joinToString(" ")
 
     inline fun <reified T> Gson.fromJsonTyped(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
     inline fun <reified T> Gson.fromJsonTyped(reader: Reader): T = fromJson(reader, object : TypeToken<T>() {}.type)
